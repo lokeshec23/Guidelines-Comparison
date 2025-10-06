@@ -10,7 +10,8 @@ import Login from "./pages/auth/Login";
 
 // Layout + inner pages
 import Home from "./pages/home/Home";
-import Dashboard from "./pages/home/Dashboard";
+
+import "./App.css";
 
 import { ToastContainer } from "react-toastify";
 

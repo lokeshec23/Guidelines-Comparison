@@ -23,7 +23,7 @@ const Header = () => {
     <header className="h-16 bg-white flex items-center justify-between px-6 shadow-md fixed top-0 left-0 right-0 z-50">
       {/* Left: Logo */}
       <div className="flex items-center">
-        <img src="/loandna_logo.png" alt="Logo" className="h-9 w-auto" />
+        <img src="/vite.svg" alt="Logo" className="h-9 w-auto" />
       </div>
 
       {/* Right: Avatar Dropdown */}
@@ -36,17 +36,19 @@ const Header = () => {
         </div>
 
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-56 bg-white shadow-xl rounded-lg border z-50 p-4 ">
+          <div className="absolute right-0 mt-3 min-w-[280px] max-w-[320px] bg-white shadow-2xl rounded-lg border z-50 p-4 transition-all duration-200 ease-out">
             {/* User Info */}
-            <div className="flex items-center space-x-3 pb-3 border-b">
+            <div className="flex items-center space-x-3 pb-3 border-b border-gray-200">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#12699D] text-white font-bold text-lg">
                 {initial}
               </div>
-              <div>
-                <div className="text-gray-900 font-semibold text-base">
+              <div className="overflow-hidden">
+                <div className="text-gray-900 font-semibold text-base truncate">
                   {user?.username || "Unknown User"}
                 </div>
-                <div className="text-gray-500 text-sm">{user?.email || ""}</div>
+                <div className="text-gray-500 text-sm truncate">
+                  {user?.email || ""}
+                </div>
               </div>
             </div>
 
