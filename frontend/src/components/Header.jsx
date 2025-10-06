@@ -23,7 +23,7 @@ const Header = () => {
     <header className="h-16 bg-white flex items-center justify-between px-6 shadow-md fixed top-0 left-0 right-0 z-50">
       {/* Left: Logo */}
       <div className="flex items-center">
-        <img src="/vite.svg" alt="Logo" className="h-9 w-auto" />
+        <img src="/loandna_logo.png" alt="Logo" className="h-9 w-auto" />
       </div>
 
       {/* Right: Avatar Dropdown */}
