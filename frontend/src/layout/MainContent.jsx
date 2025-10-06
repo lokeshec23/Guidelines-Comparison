@@ -10,25 +10,24 @@ const MainContent = () => {
     <Box
       component="main"
       sx={{
-        ml: isSidebarExpanded ? "240px" : "80px", // space for sidebar
-        mt: "64px", // below header
-        mb: "64px", // above footer
+        ml: isSidebarExpanded ? "240px" : "80px",
+        mt: "64px", // header
+        mb: "25px", // ✅ updated footer height
         transition: "margin-left 0.25s ease",
         bgcolor: "background.default",
-        minHeight: "calc(100vh - 128px)",
+        minHeight: "calc(100vh - 89px)", // ✅ 64 header + 25 footer
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
+        width: "100%",
       }}
     >
       <Typography
         variant="h3"
         fontWeight={600}
         color="primary.main"
-        sx={{
-          letterSpacing: 0.5,
-        }}
+        sx={{ letterSpacing: 0.5 }}
       >
         {activeSection}
       </Typography>

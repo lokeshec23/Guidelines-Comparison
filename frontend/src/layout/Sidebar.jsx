@@ -28,19 +28,19 @@ const Sidebar = () => {
       sx={{
         width: isSidebarExpanded ? 240 : 80,
         transition: "width 0.25s ease",
-        height: "calc(100vh - 128px)", // excluding header/footer
+        height: "calc(100vh - 89px)", // ✅ 64 header + 25 footer
         bgcolor: "background.paper",
         borderRight: "1px solid #e0e0e0",
         position: "fixed",
         top: 64,
-        bottom: 64,
+        bottom: 25,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
         zIndex: 10,
       }}
     >
-      {/* Expand/Collapse at Top */}
+      {/* Expand/Collapse Button */}
       <Box
         sx={{
           display: "flex",
@@ -62,8 +62,8 @@ const Sidebar = () => {
         </IconButton>
       </Box>
 
-      {/* Sidebar Menu */}
-      <List sx={{ flexGrow: 1, mt: 2 }}>
+      {/* Menu Items */}
+      <List sx={{ flexGrow: 1, mt: 1 }}>
         {menuItems.map((item) => (
           <Tooltip
             key={item.label}
