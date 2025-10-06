@@ -3,29 +3,20 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-// Create context
 const AuthContext = createContext();
-
-// Custom hook for easy access
 export const useAuth = () => useContext(AuthContext);
 
-// Provider component
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount, check if tokens exist and fetch user
   useEffect(() => {
     const access = sessionStorage.getItem("accessToken");
-    if (access) {
-      fetchUser();
-    } else {
-      setLoading(false);
-    }
+    if (access) fetchUser();
+    else setLoading(false);
   }, []);
 
-  // Fetch current user from backend
   const fetchUser = async () => {
     try {
       const res = await api.get("/auth/me");
@@ -39,17 +30,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register user
+  // ✅ UPDATED: After successful registration → navigate to login (not auto-login)
   const register = async (username, email, password) => {
     try {
       await api.post("/auth/register", { username, email, password });
-      await login(email, password);
+      navigate("/login"); // 👈 redirect to login instead of auto-login
     } catch (err) {
       throw err.response?.data?.detail || "Registration failed.";
     }
   };
 
-  // Login user
+  // ✅ Login user
   const login = async (email, password) => {
     try {
       const res = await api.post("/auth/login", { email, password });
@@ -65,20 +56,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout user
   const logout = () => {
     sessionStorage.clear();
     setUser(null);
     navigate("/login");
   };
 
-  const value = {
-    user,
-    loading,
-    register,
-    login,
-    logout,
-  };
+  const value = { user, loading, register, login, logout };
 
   return (
     <AuthContext.Provider value={value}>
