@@ -1,31 +1,36 @@
 // src/pages/home/Home.jsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import Header from "../../components/Header";
-import Dashboard from "./Dashboard";
+import Footer from "../../components/Footer";
+import Sidebar from "../../layout/Sidebar";
+import MainContent from "../../layout/MainContent";
+import { HomeLayoutProvider } from "../../layout/HomeLayoutContext";
 
 const Home = () => {
   return (
-    <Box minHeight="100vh" bgcolor="background.default">
-      {/* Fixed Header */}
-      <Header />
-
-      {/* Page content below header */}
+    <HomeLayoutProvider>
       <Box
-        component="main"
         sx={{
-          pt: "80px", // ✅ offset for fixed header (toolbar height)
-          px: 3,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          bgcolor: "background.default",
         }}
       >
-        <Routes>
-          <Route path="/" element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="*" element={<Navigate to="dashboard" replace />} />
-        </Routes>
+        {/* Fixed Header */}
+        <Header />
+
+        {/* Sidebar + Main Area */}
+        <Box sx={{ display: "flex", flexGrow: 1 }}>
+          <Sidebar />
+          <MainContent />
+        </Box>
+
+        {/* Fixed Footer */}
+        <Footer />
       </Box>
-    </Box>
+    </HomeLayoutProvider>
   );
 };
 
