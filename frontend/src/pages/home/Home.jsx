@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import Sidebar from "../../layout/Sidebar";
 import { HomeLayoutProvider } from "../../layout/HomeLayoutContext";
 import { Routes, Route, Navigate } from "react-router-dom";
+import IngestionModal from "../../components/ingestion/IngestionModal";
 
 const Home = () => {
   return (
@@ -23,7 +24,7 @@ const Home = () => {
         {/* Sidebar + Route-based Main Area */}
         <Box sx={{ display: "flex", flexGrow: 1 }}>
           <Sidebar />
-
+          <IngestionModal />
           <Box
             component="main"
             sx={{
