@@ -1,12 +1,42 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import Button from "@mui/material/Button";
-function App() {
-  const [count, setCount] = useState(0);
+// src/App.jsx
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-  return <Button variant="contained">Contained</Button>;
-}
+// Auth pages
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+
+// Dashboard
+import Dashboard from "./pages/dashboard/Dashboard";
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <Routes>
+        {/* Default redirect to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Auth Routes */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch-all fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </AuthProvider>
+  );
+};
 
 export default App;
