@@ -9,7 +9,7 @@ const useIngestionHandler = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [isDragActive, setIsDragActive] = useState(false); // ✅ NEW: for drag UI feedback
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,19 +29,28 @@ const useIngestionHandler = () => {
       const pdfFiles = fileArray.filter(
         (file) => file.type === "application/pdf"
       );
-
-      if (pdfFiles.length !== fileArray.length) {
+      if (pdfFiles.length !== fileArray.length)
         alert("Only PDF files are allowed.");
-      }
-
-      setSelectedFiles(pdfFiles);
-      setUploadSuccess(pdfFiles.length > 0);
+      setSelectedFiles((prev) => [...prev, ...pdfFiles]);
+      setUploadSuccess(true);
     } catch (error) {
       console.error("Error selecting files:", error);
     }
   }, []);
 
-  // ✅ Drag & drop handlers
+  // ✅ Remove a selected file
+  const handleRemoveFile = useCallback((index) => {
+    try {
+      setSelectedFiles((prev) => {
+        const updated = prev.filter((_, i) => i !== index);
+        if (updated.length === 0) setUploadSuccess(false);
+        return updated;
+      });
+    } catch (error) {
+      console.error("Error removing file:", error);
+    }
+  }, []);
+
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
     setIsDragActive(true);
@@ -72,7 +81,6 @@ const useIngestionHandler = () => {
   const handleUpload = useCallback(() => {
     if (!guidelineName || selectedFiles.length === 0) return;
     setUploading(true);
-
     setTimeout(() => {
       setUploading(false);
       setSnackbarOpen(true);
@@ -95,10 +103,11 @@ const useIngestionHandler = () => {
     uploadSuccess,
     snackbarOpen,
     uploading,
-    isDragActive, // ✅ export drag state
+    isDragActive,
     handleNameChange,
     handleFileSelect,
-    handleDragOver, // ✅ export drag handlers
+    handleRemoveFile, // ✅ export remove handler
+    handleDragOver,
     handleDragLeave,
     handleDrop,
     handleDiscard,

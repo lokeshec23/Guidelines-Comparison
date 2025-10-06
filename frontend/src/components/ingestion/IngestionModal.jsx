@@ -17,9 +17,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import useIngestionHandler from "./useIngestionHandler";
 
 const IngestionModal = () => {
@@ -33,6 +36,7 @@ const IngestionModal = () => {
     isDragActive,
     handleNameChange,
     handleFileSelect,
+    handleRemoveFile,
     handleDragOver,
     handleDragLeave,
     handleDrop,
@@ -63,7 +67,7 @@ const IngestionModal = () => {
             Upload or Drag and Drop PDFs to Start Extracting
           </Typography>
 
-          {/* Drag & Drop Area */}
+          {/* Drag-and-Drop Zone */}
           <Paper
             variant="outlined"
             sx={{
@@ -89,7 +93,6 @@ const IngestionModal = () => {
             <CloudUploadIcon
               color="primary"
               sx={{ fontSize: 50, mb: 1, opacity: 0.8 }}
-              onClick={(e) => handleFileSelect(e.target.files)}
             />
             <Typography variant="body2" color="text.secondary">
               {isDragActive
@@ -115,7 +118,7 @@ const IngestionModal = () => {
             sx={{ mb: 3 }}
           />
 
-          {/* Upload Button */}
+          {/* File Upload Button */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Button
               variant="outlined"
@@ -130,7 +133,7 @@ const IngestionModal = () => {
                 alignSelf: "flex-start",
               }}
             >
-              Upload Document
+              Select PDFs
               <input
                 type="file"
                 hidden
@@ -140,17 +143,34 @@ const IngestionModal = () => {
               />
             </Button>
 
-            {/* Uploaded Files List */}
+            {/* Uploaded File List */}
             {uploadSuccess && selectedFiles.length > 0 && (
-              <List dense>
+              <List dense sx={{ borderTop: "1px solid #e0e0e0", mt: 1 }}>
                 {selectedFiles.map((file, index) => (
-                  <ListItem key={index}>
+                  <ListItem
+                    key={index}
+                    secondaryAction={
+                      <Tooltip title="Remove file" arrow>
+                        <IconButton
+                          edge="end"
+                          onClick={() => handleRemoveFile(index)}
+                        >
+                          <DeleteForeverIcon color="error" />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                  >
                     <ListItemIcon>
                       <PictureAsPdfIcon color="error" />
                     </ListItemIcon>
                     <ListItemText
                       primary={file.name}
-                      primaryTypographyProps={{ fontSize: "0.9rem" }}
+                      primaryTypographyProps={{
+                        fontSize: "0.9rem",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
                     />
                   </ListItem>
                 ))}
@@ -193,7 +213,7 @@ const IngestionModal = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for Success */}
+      {/* ✅ Snackbar for success */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
