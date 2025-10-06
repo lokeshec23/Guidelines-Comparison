@@ -1,11 +1,11 @@
 // src/pages/home/Home.jsx
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Sidebar from "../../layout/Sidebar";
-import MainContent from "../../layout/MainContent";
 import { HomeLayoutProvider } from "../../layout/HomeLayoutContext";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -18,16 +18,70 @@ const Home = () => {
           bgcolor: "background.default",
         }}
       >
-        {/* Fixed Header */}
         <Header />
 
-        {/* Sidebar + Main Area */}
+        {/* Sidebar + Route-based Main Area */}
         <Box sx={{ display: "flex", flexGrow: 1 }}>
           <Sidebar />
-          <MainContent />
+
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              ml: { xs: "80px", sm: "80px" },
+              transition: "margin-left 0.25s ease",
+              mt: "64px",
+              mb: "25px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Routes>
+              <Route
+                path="/"
+                element={<Navigate to="/home/dashboard" replace />}
+              />
+              <Route
+                path="dashboard"
+                element={
+                  <Typography
+                    variant="h3"
+                    color="primary.main"
+                    fontWeight={600}
+                  >
+                    Dashboard
+                  </Typography>
+                }
+              />
+              <Route
+                path="ingestion"
+                element={
+                  <Typography
+                    variant="h3"
+                    color="primary.main"
+                    fontWeight={600}
+                  >
+                    Ingestion
+                  </Typography>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <Typography
+                    variant="h3"
+                    color="primary.main"
+                    fontWeight={600}
+                  >
+                    Settings
+                  </Typography>
+                }
+              />
+            </Routes>
+          </Box>
         </Box>
 
-        {/* Fixed Footer */}
         <Footer />
       </Box>
     </HomeLayoutProvider>

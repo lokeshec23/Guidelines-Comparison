@@ -7,9 +7,8 @@ export const useHomeLayout = () => useContext(HomeLayoutContext);
 
 export const HomeLayoutProvider = ({ children }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-  const [activeSection, setActiveSection] = useState("Ingestion");
+  const [activeSection, setActiveSection] = useState("Dashboard"); // ✅ default dashboard
 
-  // Toggle sidebar expand/collapse
   const toggleSidebar = useCallback(() => {
     try {
       setIsSidebarExpanded((prev) => !prev);
@@ -18,7 +17,6 @@ export const HomeLayoutProvider = ({ children }) => {
     }
   }, []);
 
-  // Change active section
   const changeSection = useCallback((sectionName) => {
     try {
       setActiveSection(sectionName);
@@ -27,15 +25,10 @@ export const HomeLayoutProvider = ({ children }) => {
     }
   }, []);
 
-  const value = {
-    isSidebarExpanded,
-    toggleSidebar,
-    activeSection,
-    changeSection,
-  };
-
   return (
-    <HomeLayoutContext.Provider value={value}>
+    <HomeLayoutContext.Provider
+      value={{ isSidebarExpanded, toggleSidebar, activeSection, changeSection }}
+    >
       {children}
     </HomeLayoutContext.Provider>
   );
