@@ -8,20 +8,20 @@ import Dashboard from "./Dashboard";
 const Home = () => {
   return (
     <Box minHeight="100vh" bgcolor="background.default">
-      {/* Persistent Header */}
+      {/* Fixed Header */}
       <Header />
 
-      {/* Nested content area */}
-      <Box p={3}>
+      {/* Page content below header */}
+      <Box
+        component="main"
+        sx={{
+          pt: "80px", // ✅ offset for fixed header (toolbar height)
+          px: 3,
+        }}
+      >
         <Routes>
           <Route path="/" element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
-
-          {/* Future routes can go here */}
-          {/* <Route path="profile" element={<Profile />} /> */}
-          {/* <Route path="settings" element={<Settings />} /> */}
-
-          {/* Catch-all for invalid paths under /home */}
           <Route path="*" element={<Navigate to="dashboard" replace />} />
         </Routes>
       </Box>
