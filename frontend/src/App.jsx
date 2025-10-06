@@ -3,6 +3,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
 // Auth pages
 import Register from "./pages/auth/Register";
@@ -14,6 +15,18 @@ import Dashboard from "./pages/dashboard/Dashboard";
 const App = () => {
   return (
     <AuthProvider>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="light"
+      />
       <Routes>
         {/* Default redirect to login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
