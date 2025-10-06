@@ -6,7 +6,6 @@ import {
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
   Tooltip,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -29,80 +28,25 @@ const Sidebar = () => {
       sx={{
         width: isSidebarExpanded ? 240 : 80,
         transition: "width 0.25s ease",
-        height: "calc(100vh - 128px)", // excluding header & footer height
+        height: "calc(100vh - 128px)", // excluding header/footer
         bgcolor: "background.paper",
         borderRight: "1px solid #e0e0e0",
         position: "fixed",
-        top: 64, // below header
-        bottom: 64, // above footer
+        top: 64,
+        bottom: 64,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         overflow: "hidden",
         zIndex: 10,
       }}
     >
-      {/* Sidebar Menu */}
-      <List sx={{ flexGrow: 1, mt: 2 }}>
-        {menuItems.map((item) => (
-          <Tooltip
-            key={item.label}
-            title={!isSidebarExpanded ? item.label : ""}
-            placement="right"
-            arrow
-          >
-            <ListItemButton
-              selected={activeSection === item.label}
-              onClick={() => changeSection(item.label)}
-              sx={{
-                py: 1.5,
-                px: 2,
-                borderRadius: 2,
-                mx: 1,
-                mb: 1,
-                "&.Mui-selected": {
-                  bgcolor: "primary.light",
-                  color: "primary.main",
-                  "&:hover": {
-                    bgcolor: "primary.light",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: isSidebarExpanded ? 2 : "auto",
-                  justifyContent: "center",
-                  color:
-                    activeSection === item.label
-                      ? "primary.main"
-                      : "text.secondary",
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-              {isSidebarExpanded && (
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: 15,
-                    fontWeight: activeSection === item.label ? 600 : 500,
-                  }}
-                />
-              )}
-            </ListItemButton>
-          </Tooltip>
-        ))}
-      </List>
-
-      {/* Expand/Collapse Button */}
+      {/* Expand/Collapse at Top */}
       <Box
         sx={{
           display: "flex",
           justifyContent: isSidebarExpanded ? "flex-end" : "center",
           p: 1,
-          borderTop: "1px solid #e0e0e0",
+          borderBottom: "1px solid #e0e0e0",
         }}
       >
         <IconButton
@@ -117,6 +61,59 @@ const Sidebar = () => {
           {isSidebarExpanded ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </Box>
+
+      {/* Sidebar Menu */}
+      <List sx={{ flexGrow: 1, mt: 2 }}>
+        {menuItems.map((item) => (
+          <Tooltip
+            key={item.label}
+            title={!isSidebarExpanded ? item.label : ""}
+            placement="right"
+            arrow
+          >
+            <ListItemButton
+              onClick={() => changeSection(item.label)}
+              sx={{
+                py: 1.5,
+                px: isSidebarExpanded ? 2 : 0,
+                mx: isSidebarExpanded ? 1 : 0,
+                justifyContent: isSidebarExpanded ? "flex-start" : "center",
+                "&:hover": {
+                  bgcolor: "action.hover",
+                },
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  justifyContent: "center",
+                  color:
+                    activeSection === item.label
+                      ? "primary.main"
+                      : "text.secondary",
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              {isSidebarExpanded && (
+                <Box
+                  sx={{
+                    ml: 2,
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color:
+                      activeSection === item.label
+                        ? "primary.main"
+                        : "text.secondary",
+                  }}
+                >
+                  {item.label}
+                </Box>
+              )}
+            </ListItemButton>
+          </Tooltip>
+        ))}
+      </List>
     </Box>
   );
 };

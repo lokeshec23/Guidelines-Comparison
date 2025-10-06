@@ -1,6 +1,6 @@
 // src/layout/MainContent.jsx
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useHomeLayout } from "./HomeLayoutContext";
 
 const MainContent = () => {
@@ -13,28 +13,25 @@ const MainContent = () => {
         ml: isSidebarExpanded ? "240px" : "80px", // space for sidebar
         mt: "64px", // below header
         mb: "64px", // above footer
-        p: 3,
         transition: "margin-left 0.25s ease",
         bgcolor: "background.default",
         minHeight: "calc(100vh - 128px)",
-        overflow: "auto",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
       }}
     >
-      <Paper
-        elevation={3}
+      <Typography
+        variant="h3"
+        fontWeight={600}
+        color="primary.main"
         sx={{
-          p: 4,
-          minHeight: "200px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 3,
+          letterSpacing: 0.5,
         }}
       >
-        <Typography variant="h4" fontWeight={600} color="primary.main">
-          {activeSection}
-        </Typography>
-      </Paper>
+        {activeSection}
+      </Typography>
     </Box>
   );
 };
