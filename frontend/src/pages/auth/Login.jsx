@@ -30,7 +30,7 @@ const Login = () => {
       setLoading(true);
       await login(userInfo.email.toLowerCase(), userInfo.password);
       toast.success("Login successful!");
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       toast.error(err || "Invalid credentials, please try again.");
     } finally {

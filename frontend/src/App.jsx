@@ -3,14 +3,16 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { ToastContainer } from "react-toastify";
 
 // Auth pages
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 
-// Dashboard
-import Dashboard from "./pages/dashboard/Dashboard";
+// Layout + inner pages
+import Home from "./pages/home/Home";
+import Dashboard from "./pages/home/Dashboard";
+
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
@@ -28,24 +30,24 @@ const App = () => {
         theme="light"
       />
       <Routes>
-        {/* Default redirect to login */}
+        {/* Default redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Auth Routes */}
-        <Route path="/register" element={<Register />} />
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* Protected Dashboard */}
+        {/* Protected Home (layout + routes inside) */}
         <Route
-          path="/dashboard"
+          path="/home/*"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Home />
             </ProtectedRoute>
           }
         />
 
-        {/* Catch-all fallback */}
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AuthProvider>

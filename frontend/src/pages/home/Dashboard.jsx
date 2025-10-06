@@ -10,7 +10,7 @@ const Dashboard = () => {
   return (
     <Box minHeight="100vh" bgcolor="background.default">
       {/* Header at the top */}
-      <Header />
+      {/* <Header /> */}
 
       {/* Dashboard content */}
       <Box
