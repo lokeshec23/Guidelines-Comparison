@@ -1,5 +1,5 @@
 // src/pages/auth/Login.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,18 +8,27 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const location = useLocation();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  // ✅ Detect if redirected from registration
+  useEffect(() => {
+    if (location.state?.registered) {
+      setOpenSnackbar(true);
+      // Clean up state so Snackbar doesn’t reappear on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     setFormData({
@@ -111,6 +120,15 @@ const Login = () => {
           </Link>
         </Typography>
       </Paper>
+
+      {/* ✅ Snackbar for registration success */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        message="Registration successful! Please log in."
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Box>
   );
 };

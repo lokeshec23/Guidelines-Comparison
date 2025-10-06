@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     try {
       await api.post("/auth/register", { username, email, password });
-      navigate("/login"); // 👈 redirect to login instead of auto-login
+      navigate("/login", { state: { registered: true } }); // ✅ Pass flag to login page
     } catch (err) {
       throw err.response?.data?.detail || "Registration failed.";
     }
