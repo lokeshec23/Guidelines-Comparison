@@ -5,98 +5,105 @@ import { useLocation, useNavigate } from "react-router-dom";
 const useIngestionHandler = () => {
   const [open, setOpen] = useState(false);
   const [guidelineName, setGuidelineName] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // ✅ new state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false); // ✅ NEW: for drag UI feedback
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const checkRouteForModal = useCallback(() => {
-    try {
-      if (location.pathname === "/home/ingestion") setOpen(true);
-      else setOpen(false);
-    } catch (error) {
-      console.error("Error checking ingestion route:", error);
-    }
+    if (location.pathname === "/home/ingestion") setOpen(true);
+    else setOpen(false);
   }, [location.pathname]);
 
   const handleNameChange = useCallback((e) => {
-    try {
-      setGuidelineName(e.target.value);
-    } catch (error) {
-      console.error("Error updating guideline name:", error);
-    }
+    setGuidelineName(e.target.value);
   }, []);
 
-  const handleFileSelect = useCallback((e) => {
+  const handleFileSelect = useCallback((files) => {
     try {
-      const file = e.target.files[0];
-      if (file && file.type === "application/pdf") {
-        setSelectedFile(file);
-        setUploadSuccess(true);
+      const fileArray = Array.from(files);
+      const pdfFiles = fileArray.filter(
+        (file) => file.type === "application/pdf"
+      );
 
-        // ✅ Reset file input value so re-upload works properly
-        e.target.value = "";
-      } else if (file) {
+      if (pdfFiles.length !== fileArray.length) {
         alert("Only PDF files are allowed.");
-        e.target.value = "";
       }
+
+      setSelectedFiles(pdfFiles);
+      setUploadSuccess(pdfFiles.length > 0);
     } catch (error) {
-      console.error("Error selecting file:", error);
+      console.error("Error selecting files:", error);
     }
   }, []);
+
+  // ✅ Drag & drop handlers
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    setIsDragActive(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    setIsDragActive(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsDragActive(false);
+      handleFileSelect(e.dataTransfer.files);
+    },
+    [handleFileSelect]
+  );
 
   const handleDiscard = useCallback(() => {
-    try {
-      setOpen(false);
-      navigate("/home/dashboard");
-      setGuidelineName("");
-      setSelectedFile(null);
-      setUploadSuccess(false);
-    } catch (error) {
-      console.error("Error closing modal:", error);
-    }
+    setOpen(false);
+    navigate("/home/dashboard");
+    setGuidelineName("");
+    setSelectedFiles([]);
+    setUploadSuccess(false);
   }, [navigate]);
 
   const handleUpload = useCallback(() => {
-    try {
-      if (!guidelineName || !selectedFile) return;
-      console.log("Uploading file:", selectedFile.name);
+    if (!guidelineName || selectedFiles.length === 0) return;
+    setUploading(true);
 
-      // ✅ Mock upload
-      setTimeout(() => {
-        setSnackbarOpen(true); // show snackbar
-        setOpen(false);
-        setUploadSuccess(false);
-        setGuidelineName("");
-        setSelectedFile(null);
-        navigate("/home/dashboard");
-      }, 800);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  }, [guidelineName, selectedFile, navigate]);
+    setTimeout(() => {
+      setUploading(false);
+      setSnackbarOpen(true);
+      setOpen(false);
+      setUploadSuccess(false);
+      setGuidelineName("");
+      setSelectedFiles([]);
+      navigate("/home/dashboard");
+    }, 1200);
+  }, [guidelineName, selectedFiles, navigate]);
 
   const handleSnackbarClose = useCallback(() => {
-    try {
-      setSnackbarOpen(false);
-    } catch (error) {
-      console.error("Error closing snackbar:", error);
-    }
+    setSnackbarOpen(false);
   }, []);
 
   return {
     open,
     guidelineName,
-    selectedFile,
+    selectedFiles,
     uploadSuccess,
-    snackbarOpen, // ✅ export snackbar state
+    snackbarOpen,
+    uploading,
+    isDragActive, // ✅ export drag state
     handleNameChange,
     handleFileSelect,
+    handleDragOver, // ✅ export drag handlers
+    handleDragLeave,
+    handleDrop,
     handleDiscard,
     handleUpload,
-    handleSnackbarClose, // ✅ export close handler
+    handleSnackbarClose,
     checkRouteForModal,
   };
 };

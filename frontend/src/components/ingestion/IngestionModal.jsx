@@ -1,5 +1,5 @@
 // src/components/ingestion/IngestionModal.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -13,57 +13,46 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import useIngestionHandler from "./useIngestionHandler";
 
 const IngestionModal = () => {
   const {
     open,
     guidelineName,
-    selectedFile,
+    selectedFiles,
     uploadSuccess,
     snackbarOpen,
+    uploading,
+    isDragActive,
     handleNameChange,
     handleFileSelect,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
     handleDiscard,
     handleUpload,
     handleSnackbarClose,
     checkRouteForModal,
   } = useIngestionHandler();
 
-  const [uploading, setUploading] = useState(false);
-
-  // Auto open modal on /home/ingestion route
   useEffect(() => {
     checkRouteForModal();
   }, [checkRouteForModal]);
 
-  // Handle Upload click (simulate loading)
-  const handleUploadWithLoader = async () => {
-    try {
-      setUploading(true);
-      setTimeout(() => {
-        handleUpload();
-        setUploading(false);
-      }, 1000);
-    } catch (error) {
-      console.error("Error in upload simulation:", error);
-      setUploading(false);
-    }
-  };
-
   return (
     <>
-      {/* ================= Modal ================= */}
       <Dialog
         open={open}
         fullWidth
         maxWidth="sm"
-        PaperProps={{
-          sx: { borderRadius: 3, overflow: "visible" },
-        }}
+        PaperProps={{ sx: { borderRadius: 3, overflow: "visible" } }}
       >
         <DialogTitle sx={{ fontWeight: 600, fontSize: "1.3rem" }}>
           Upload Documents
@@ -71,31 +60,41 @@ const IngestionModal = () => {
 
         <DialogContent sx={{ pt: 1 }}>
           <Typography variant="body2" color="text.secondary" mb={2}>
-            Upload documents to start extracting
+            Upload or Drag and Drop PDFs to Start Extracting
           </Typography>
 
-          {/* Upload Area */}
+          {/* Drag & Drop Area */}
           <Paper
             variant="outlined"
             sx={{
               borderStyle: "dashed",
-              borderColor: "#b0bec5",
+              borderColor: isDragActive ? "primary.main" : "#b0bec5",
+              borderWidth: isDragActive ? 2.5 : 1,
               borderRadius: 2,
-              background: "linear-gradient(180deg, #f9fbfc, #ffffff)",
+              background: isDragActive
+                ? "rgba(25, 118, 210, 0.05)"
+                : "linear-gradient(180deg, #f9fbfc, #ffffff)",
               height: 150,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
               mb: 3,
+              transition: "all 0.2s ease",
             }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
             <CloudUploadIcon
               color="primary"
               sx={{ fontSize: 50, mb: 1, opacity: 0.8 }}
+              onClick={(e) => handleFileSelect(e.target.files)}
             />
             <Typography variant="body2" color="text.secondary">
-              Upload or Drag and Drop
+              {isDragActive
+                ? "Drop files here..."
+                : "Click below or drag and drop your PDFs"}
             </Typography>
             <Typography
               variant="caption"
@@ -106,9 +105,9 @@ const IngestionModal = () => {
             </Typography>
           </Paper>
 
-          {/* Guideline Name Field */}
+          {/* Guideline Name */}
           <TextField
-            label="Guideline Name *"
+            label="Guideline Name"
             variant="outlined"
             fullWidth
             value={guidelineName}
@@ -117,58 +116,54 @@ const IngestionModal = () => {
           />
 
           {/* Upload Button */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            {/* Stable Input Upload Button */}
-            <Box position="relative">
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Button
+              variant="outlined"
+              component="label"
+              color="primary"
+              disabled={!guidelineName}
+              startIcon={<CloudUploadIcon />}
+              sx={{
+                textTransform: "none",
+                fontWeight: 500,
+                borderRadius: 2,
+                alignSelf: "flex-start",
+              }}
+            >
+              Upload Document
               <input
                 type="file"
-                id="pdfUpload"
-                accept=".pdf"
                 hidden
-                onChange={handleFileSelect}
+                accept=".pdf"
+                multiple
+                onChange={(e) => handleFileSelect(e.target.files)}
               />
-              <label htmlFor="pdfUpload">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  component="span"
-                  disabled={!guidelineName || uploading}
-                  startIcon={<CloudUploadIcon />}
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: 500,
-                    borderRadius: 2,
-                  }}
-                >
-                  {uploading ? "Uploading..." : "Upload Document"}
-                </Button>
-              </label>
-            </Box>
+            </Button>
 
-            {uploadSuccess && selectedFile && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CheckCircleIcon color="success" />
-                <Typography variant="body2" color="success.main">
-                  {selectedFile.name} uploaded successfully
-                </Typography>
-              </Box>
+            {/* Uploaded Files List */}
+            {uploadSuccess && selectedFiles.length > 0 && (
+              <List dense>
+                {selectedFiles.map((file, index) => (
+                  <ListItem key={index}>
+                    <ListItemIcon>
+                      <PictureAsPdfIcon color="error" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={file.name}
+                      primaryTypographyProps={{ fontSize: "0.9rem" }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
             )}
           </Box>
         </DialogContent>
 
-        {/* Actions */}
         <DialogActions sx={{ justifyContent: "flex-end", px: 3, pb: 2 }}>
           <Button
             variant="outlined"
             color="error"
             onClick={handleDiscard}
-            disabled={uploading}
             sx={{
               textTransform: "none",
               borderRadius: 2,
@@ -177,17 +172,16 @@ const IngestionModal = () => {
           >
             Discard
           </Button>
-
           <Button
             variant="contained"
             color="primary"
-            onClick={handleUploadWithLoader}
-            disabled={!guidelineName || !selectedFile || uploading}
+            onClick={handleUpload}
+            disabled={!guidelineName || selectedFiles.length === 0 || uploading}
             sx={{
               textTransform: "none",
               borderRadius: 2,
               fontWeight: 500,
-              minWidth: "100px",
+              minWidth: 100,
             }}
           >
             {uploading ? (
@@ -199,7 +193,7 @@ const IngestionModal = () => {
         </DialogActions>
       </Dialog>
 
-      {/* ================= Snackbar ================= */}
+      {/* Snackbar for Success */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
@@ -212,7 +206,7 @@ const IngestionModal = () => {
           variant="filled"
           sx={{ borderRadius: 2 }}
         >
-          PDF uploaded successfully!
+          All PDFs uploaded successfully!
         </Alert>
       </Snackbar>
     </>
