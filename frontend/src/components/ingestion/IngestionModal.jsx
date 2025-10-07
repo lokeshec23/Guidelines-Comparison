@@ -1,5 +1,4 @@
-// src/components/ingestion/IngestionModal.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -46,9 +45,16 @@ const IngestionModal = () => {
     checkRouteForModal,
   } = useIngestionHandler();
 
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     checkRouteForModal();
   }, [checkRouteForModal]);
+
+  // ✅ trigger file input when drop zone clicked
+  const handleDropZoneClick = () => {
+    if (guidelineName) fileInputRef.current?.click();
+  };
 
   return (
     <>
@@ -56,18 +62,65 @@ const IngestionModal = () => {
         open={open}
         fullWidth
         maxWidth="sm"
-        PaperProps={{ sx: { borderRadius: 3, overflow: "visible" } }}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            overflow: "hidden", // ✅ ensures internal scroll, not external
+            display: "flex",
+            flexDirection: "column",
+            maxHeight: "90vh", // ✅ prevents dialog overflow on smaller screens
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 600, fontSize: "1.3rem" }}>
+        {/* Title */}
+        <DialogTitle
+          sx={{
+            fontWeight: 600,
+            fontSize: "1.3rem",
+            pb: 0,
+            flexShrink: 0,
+          }}
+        >
           Upload Documents
         </DialogTitle>
 
-        <DialogContent sx={{ pt: 1 }}>
-          <Typography variant="body2" color="text.secondary" mb={2}>
-            Upload or Drag and Drop PDFs to Start Extracting
-          </Typography>
+        {/* Scrollable main content */}
+        <DialogContent
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto", // ✅ scroll only inside content
+            px: 3,
+            pt: 3,
+            pb: 1,
+            position: "relative",
+            zIndex: 2,
+            bgcolor: "background.paper",
+          }}
+        >
+          {/* Guideline Name */}
+          <TextField
+            label="Guideline Name"
+            variant="outlined"
+            fullWidth
+            value={guidelineName}
+            onChange={handleNameChange}
+            sx={{
+              mb: 3,
+              mt: 1, // ✅ gives breathing space below title
+              position: "relative",
+              zIndex: 10, // ✅ ensures label floats above DialogTitle
+              "& .MuiInputLabel-root": {
+                backgroundColor: "background.paper", // ✅ clean background under label
+                px: 0.5,
+                zIndex: 11, // ✅ ensures label text is never hidden
+              },
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "background.paper",
+              },
+            }}
+          />
 
-          {/* Drag-and-Drop Zone */}
+          {/* Drop zone */}
           <Paper
             variant="outlined"
             sx={{
@@ -78,26 +131,28 @@ const IngestionModal = () => {
               background: isDragActive
                 ? "rgba(25, 118, 210, 0.05)"
                 : "linear-gradient(180deg, #f9fbfc, #ffffff)",
-              height: 150,
+              height: 180,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
               mb: 3,
               transition: "all 0.2s ease",
+              cursor: guidelineName ? "pointer" : "not-allowed",
+              opacity: guidelineName ? 1 : 0.6,
             }}
+            onClick={() => guidelineName && fileInputRef.current?.click()}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <CloudUploadIcon
-              color="primary"
-              sx={{ fontSize: 50, mb: 1, opacity: 0.8 }}
-            />
+            <CloudUploadIcon color="primary" sx={{ fontSize: 55, mb: 1 }} />
             <Typography variant="body2" color="text.secondary">
               {isDragActive
                 ? "Drop files here..."
-                : "Click below or drag and drop your PDFs"}
+                : guidelineName
+                ? "Click or drag and drop your PDFs"
+                : "Enter a Guideline Name to enable upload"}
             </Typography>
             <Typography
               variant="caption"
@@ -106,46 +161,38 @@ const IngestionModal = () => {
             >
               Supported File Types: .pdf
             </Typography>
+
+            {/* Hidden Input */}
+            <input
+              type="file"
+              hidden
+              accept=".pdf"
+              multiple
+              ref={fileInputRef}
+              onChange={(e) => handleFileSelect(e.target.files)}
+            />
           </Paper>
 
-          {/* Guideline Name */}
-          <TextField
-            label="Guideline Name"
-            variant="outlined"
-            fullWidth
-            value={guidelineName}
-            onChange={handleNameChange}
-            sx={{ mb: 3 }}
-          />
-
-          {/* File Upload Button */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Button
-              variant="outlined"
-              component="label"
-              color="primary"
-              disabled={!guidelineName}
-              startIcon={<CloudUploadIcon />}
+          {/* Scrollable File List */}
+          {uploadSuccess && selectedFiles.length > 0 && (
+            <Box
               sx={{
-                textTransform: "none",
-                fontWeight: 500,
-                borderRadius: 2,
-                alignSelf: "flex-start",
+                borderTop: "1px solid #e0e0e0",
+                mt: 1,
+                maxHeight: 180,
+                overflowY: "auto",
+                pr: 1,
+                "&::-webkit-scrollbar": { width: "6px" },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "rgba(0,0,0,0.2)",
+                  borderRadius: "4px",
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                  backgroundColor: "rgba(0,0,0,0.3)",
+                },
               }}
             >
-              Select PDFs
-              <input
-                type="file"
-                hidden
-                accept=".pdf"
-                multiple
-                onChange={(e) => handleFileSelect(e.target.files)}
-              />
-            </Button>
-
-            {/* Uploaded File List */}
-            {uploadSuccess && selectedFiles.length > 0 && (
-              <List dense sx={{ borderTop: "1px solid #e0e0e0", mt: 1 }}>
+              <List dense disablePadding>
                 {selectedFiles.map((file, index) => (
                   <ListItem
                     key={index}
@@ -154,19 +201,24 @@ const IngestionModal = () => {
                         <IconButton
                           edge="end"
                           onClick={() => handleRemoveFile(index)}
+                          size="small"
                         >
-                          <DeleteForeverIcon color="error" />
+                          <DeleteForeverIcon color="error" fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     }
+                    sx={{
+                      py: 0.5,
+                      "&:hover": { bgcolor: "action.hover" },
+                    }}
                   >
-                    <ListItemIcon>
-                      <PictureAsPdfIcon color="error" />
+                    <ListItemIcon sx={{ minWidth: 32 }}>
+                      <PictureAsPdfIcon color="error" fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
                       primary={file.name}
                       primaryTypographyProps={{
-                        fontSize: "0.9rem",
+                        fontSize: "0.85rem",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -175,11 +227,21 @@ const IngestionModal = () => {
                   </ListItem>
                 ))}
               </List>
-            )}
-          </Box>
+            </Box>
+          )}
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: "flex-end", px: 3, pb: 2 }}>
+        {/* ✅ Footer Actions (always visible) */}
+        <DialogActions
+          sx={{
+            justifyContent: "flex-end",
+            px: 3,
+            py: 1.5,
+            flexShrink: 0,
+            bgcolor: "background.paper",
+            borderTop: "1px solid #e0e0e0",
+          }}
+        >
           <Button
             variant="outlined"
             color="error"
@@ -213,7 +275,7 @@ const IngestionModal = () => {
         </DialogActions>
       </Dialog>
 
-      {/* ✅ Snackbar for success */}
+      {/* ✅ Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
