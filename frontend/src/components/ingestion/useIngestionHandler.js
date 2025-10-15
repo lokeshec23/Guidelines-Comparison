@@ -23,16 +23,23 @@ const useIngestionHandler = () => {
     setGuidelineName(e.target.value);
   }, []);
 
-  const handleFileSelect = useCallback((files) => {
+  const handleFileSelect = useCallback(async (files) => {
     try {
-      const fileArray = Array.from(files);
-      const pdfFiles = fileArray.filter(
-        (file) => file.type === "application/pdf"
-      );
-      if (pdfFiles.length !== fileArray.length)
-        alert("Only PDF files are allowed.");
-      setSelectedFiles((prev) => [...prev, ...pdfFiles]);
-      setUploadSuccess(true);
+      // const fileArray = Array.from(files);
+      // const pdfFiles = fileArray.filter(
+      //   (file) => file.type === "application/pdf"
+      // );
+      // if (pdfFiles.length !== fileArray.length)
+      //   alert("Only PDF files are allowed.");
+      // setSelectedFiles((prev) => [...prev, ...pdfFiles]);
+      // setUploadSuccess(true);
+      const formData = new FormData();
+      formData.append("file", files);
+      const response = await fetch("http://localhost:8000/process-guideline", {
+        method: "POST",
+        body: formData,
+      });
+      console.log({ response });
     } catch (error) {
       console.error("Error selecting files:", error);
     }

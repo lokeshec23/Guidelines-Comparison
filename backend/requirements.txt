@@ -5,3 +5,12 @@ bcrypt
 python-jose
 pydantic[email]
 passlib
+python-multipart
+pydantic
+requests
+openai>=1.35.0
+python-dotenv
+azure-ai-formrecognizer
+azure-core
+# azure-ai-documentintelligences
+pdfplumber

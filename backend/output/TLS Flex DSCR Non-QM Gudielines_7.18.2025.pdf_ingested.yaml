@@ -1,0 +1,515 @@
+guideline_ingestion:
+  taxonomy:
+  - category: Fair Lending
+    subcategories:
+    - Fair Lending Statement
+  - category: Loan Programs
+    subcategories:
+    - Flex DSCR Non-QM Program Eligibility Matrix
+    - Prepayment Penalty
+    - Loan Products
+    - State Licensing Requirements
+  - category: Borrower Eligibility
+    subcategories:
+    - Non-U.S. Citizen Eligibility
+    - Name Affidavit
+    - Multiple Loans to the Same Borrower
+    - Multiple Financed Properties
+    - Pending Litigation
+    - First-Time Homebuyer
+    - First-Time Investor
+    - Manual Underwrite
+    - Exclusionary Lists
+  - category: Occupancy Eligibility
+    subcategories:
+    - Investment Property
+  - category: Credit Assessment
+    subcategories:
+    - Credit History
+    - Significant Derogatory Credit Events
+    - Judgements, Liens, Charge-Offs, Collections
+    - Fraud Alert
+    - Credit Freeze
+  - category: Liability Assessment
+    subcategories:
+    - Contingent Liabilities
+    - Court Ordered Assignment of Debt
+    - Mortgage Assumption
+    - Non-Borrowing Owner
+    - Other Real Estate Owned
+    - Trust Property
+    - Housing Payment History
+  - category: Income Assessment
+    subcategories:
+    - Overview
+    - Debt Service Coverage Ratio (DSCR)
+  - category: Asset Assessment
+    subcategories:
+    - General Asset Requirements
+    - Depository Accounts
+    - Earnest Money Deposit (EMD)
+    - Stocks, Bonds, and Mutual Funds
+    - Retirement Funds
+    - Anticipated Sales Proceeds
+    - Gift Funds
+    - Cash Value of Life Insurance
+    - Trust Accounts
+    - Business Assets
+    - Interested Party Contributions (IPC)
+    - Reserves
+  - category: Mortgage Eligibility
+    subcategories:
+    - Escrows/Impound Waivers
+    - Purchase Transactions
+    - Property Flip Transactions
+    - Properties Recently Listed for Sale
+    - Short Sales and Short Payoffs
+    - Refinance Transactions
+    - Continuity of Obligation
+    - Rate/Term Refinance
+    - Cash-Out Refinance
+    - Adding/Removing Borrowers
+    - Net Tangible Benefit (NTB)
+    - Non-Arm's Length Transactions
+    - Subordinate Financing
+    - Age-Related Deed Restriction
+    - Ineligible Transactions
+    - Geographic Eligibility
+    - Multiple Parcels
+    - Condominium Projects
+    - PUD Projects
+    - Property Insurance Requirements
+    - Solar Panels
+    - Initial Disclosures
+    - Closing Disclosures
+    - Affiliated Business Arrangements
+    - Fraud Detection
+    - Higher-Priced Mortgage Loans (HPML)
+  - category: Title Insurance Policy Requirements
+    subcategories:
+    - Overview
+    - Title Endorsements
+    - Title Vesting Requirements
+    - Living (Inter Vivos) Revocable Trusts
+    - Title Exceptions and Impediments
+    - Survey Requirements
+    - Closing Protection Letter
+    - Requirements for Use of a Power of Attorney
+  - category: Appraisal Analysis
+    subcategories:
+    - CDA
+    - Second Appraisal
+    - Appraisal Independence Requirements
+    - Electronic Appraisal Review
+    - Appraisal Report
+    - Appraisal Transfers
+    - Age of Appraisal Report
+    - Purchase Transactions
+    - Declining Markets
+    - Addressing Appraisal Deficiencies
+    - Site Analysis
+    - Improvements
+    - Final Inspection and Completion Report
+    - Disaster Policy
+  - category: Texas Guidelines
+    subcategories:
+    - Texas 50(a)(6)
+    - Texas 50(f)(2)
+  ontology:
+    Loan:
+      relates_to:
+      - Borrower
+      - Collateral
+      - Property
+      - Appraisal
+      - TitleInsurance
+      - Asset
+    Borrower:
+      attributes:
+      - Name
+      - CreditScore
+      - Citizenship
+      - SocialSecurityNumber
+      - EmploymentAuthorization
+      - Age
+      - ResidencyStatus
+    Collateral:
+      attributes:
+      - PropertyType
+      - AppraisedValue
+      - Location
+      - InsuranceCoverage
+    Property:
+      attributes:
+      - Address
+      - Type
+      - Size
+      - Condition
+      - Zoning
+      - Improvements
+    Appraisal:
+      attributes:
+      - AppraisedValue
+      - ComparableSales
+      - InspectionDate
+      - AppraiserName
+    TitleInsurance:
+      attributes:
+      - PolicyNumber
+      - CoverageAmount
+      - InsuredName
+      - Exceptions
+    Asset:
+      attributes:
+      - Type
+      - Value
+      - Documentation
+      - Source
+    CreditAssessment:
+      relates_to:
+      - Borrower
+      attributes:
+      - CreditHistory
+      - CreditScore
+      - Tradelines
+    LiabilityAssessment:
+      relates_to:
+      - Borrower
+      attributes:
+      - ContingentLiabilities
+      - CourtOrderedDebt
+      - MortgageAssumption
+    IncomeAssessment:
+      relates_to:
+      - Borrower
+      attributes:
+      - DebtServiceCoverageRatio
+      - RentalIncome
+    MortgageEligibility:
+      relates_to:
+      - Loan
+      attributes:
+      - EscrowRequirements
+      - TransactionType
+      - GeographicEligibility
+    FraudDetection:
+      relates_to:
+      - Loan
+      attributes:
+      - RedFlags
+      - SignatureVerification
+    ClosingDisclosures:
+      relates_to:
+      - Loan
+      attributes:
+      - ClosingCosts
+      - BorrowerSignatures
+  semantics:
+    Fair Lending Statement:
+      definition: The Loan Store's commitment to fair treatment of all customers and
+        compliance with fair lending laws.
+      context: Ensures unbiased treatment in mortgage lending, prohibiting discrimination
+        based on race, color, sex, religion, age, national origin, handicap, marital
+        status, receipt of public assistance, or exercise of rights under the Federal
+        Consumer Protection Act.
+    Flex DSCR Non-QM Program Eligibility Matrix:
+      definition: A set of criteria outlining the eligibility for the Flex DSCR Non-QM
+        loan program.
+      context: Includes investment properties, maximum loan-to-value (LTV) ratios,
+        credit score requirements, and loan amounts.
+    Prepayment Penalty:
+      definition: A charge imposed for paying all or part of the transaction's principal
+        before the due date.
+      context: Options for DSCR product with varying penalty durations, subject to
+        state law restrictions.
+    Loan Products:
+      definition: Types of mortgages offered by TLS, including fixed rate and interest-only
+        options.
+      context: Includes DSCR matrix for different loan terms and reserve calculations.
+    Borrower Eligibility:
+      definition: Criteria for individuals or entities eligible to borrow under TLS
+        guidelines.
+      context: Includes age, citizenship, residency requirements, and restrictions
+        on first-time investors and homebuyers.
+    Non-U.S. Citizen Eligibility:
+      definition: Conditions under which non-U.S. citizens may qualify for financing.
+      context: Requires legal presence and work authorization in the U.S., with specific
+        visa and residency requirements.
+    Debt Service Coverage Ratio (DSCR):
+      definition: A financial ratio used to assess a borrower's ability to cover debt
+        obligations with rental income.
+      context: Calculated using market rent or current lease divided by PITIA, applicable
+        to investment properties.
+    Asset Assessment:
+      definition: Evaluation of funds used for down payment, closing costs, and reserves.
+      context: Includes documentation requirements for various asset types and restrictions
+        on ineligible assets.
+    Mortgage Eligibility:
+      definition: Criteria for determining the eligibility of mortgage loans.
+      context: Includes requirements for escrows, purchase transactions, and refinance
+        transactions.
+    Title Insurance Policy Requirements:
+      definition: Standards for title insurance coverage to ensure valid first lien
+        on the property.
+      context: Includes acceptable forms, endorsements, and exceptions for title impediments.
+    Appraisal Analysis:
+      definition: Review process to determine property eligibility and value support.
+      context: Includes electronic appraisal review, second appraisal requirements,
+        and addressing deficiencies.
+    Disaster Policy:
+      definition: Procedures for assessing property condition and marketability post-disaster.
+      context: Applies to properties in FEMA-declared disaster areas, requiring inspections
+        and re-verification of employment.
+  rules:
+  - condition: Borrower must be a natural person and at least 18 years old
+    action: Eligible for loan
+  - condition: Borrower must be a U.S. citizen or permanent resident alien
+    action: Eligible for loan
+  - condition: Borrower must have a valid Social Security number
+    action: Eligible for loan
+  - condition: Borrower must not be a first-time homebuyer
+    action: Ineligible for loan
+  - condition: Borrower must not be party to a non-arm's length transaction
+    action: Ineligible for loan
+  - condition: Borrower must not be on exclusionary lists
+    action: Ineligible for loan
+  - condition: Property must be an investment property
+    action: Eligible for loan
+  - condition: Property must not be owner-occupied or a second home
+    action: Eligible for loan
+  - condition: Property must not be located in a declining market
+    action: 5% LTV/CLTV reduction
+  - condition: Property must not be ineligible (e.g., primary residence, second home,
+      non-arm's length)
+    action: Ineligible for loan
+  - condition: Loan must not be a Texas 50(a)(6) or Texas 50(f)(2)
+    action: Ineligible for loan
+  - condition: Borrower must have a minimum credit score of 680
+    action: Eligible for loan
+  - condition: Borrower must have at least three tradelines reporting for a minimum
+      of 24 months
+    action: Eligible for loan
+  - condition: Borrower must not have significant derogatory credit events within
+      the last 2 years
+    action: Eligible for loan
+  - condition: Borrower must have 6 months reserves
+    action: Eligible for loan
+  - condition: Borrower must not have excessive mortgage delinquency
+    action: Ineligible for loan
+  - condition: Borrower must not have open judgments, garnishments, or liens
+    action: Eligible for loan
+  - condition: Borrower must not have a credit freeze on their credit report
+    action: Ineligible for loan
+  - condition: Borrower must not be currently enrolled in credit counseling or debt
+      management plans
+    action: Ineligible for loan
+  - condition: Borrower must not have diplomatic immunity
+    action: Ineligible for loan
+  - condition: Borrower must not be party to a lawsuit
+    action: Requires management exception
+  - condition: Borrower must not have multiple SSNs on credit report without explanation
+    action: Requires signed/dated borrower letter of explanation
+  - condition: Borrower must not have unauthorized user accounts counted as tradelines
+    action: Ineligible for loan
+  - condition: Borrower must not have rapid rescore ordered by underwriter
+    action: Ineligible for loan
+  - condition: Borrower must not have a recent forbearance, loan modification, or
+      deferral
+    action: Ineligible for loan
+  - condition: Borrower must not have multiple bankruptcy filings
+    action: Ineligible for loan
+  - condition: Borrower must not have foreclosure within the last 2 years
+    action: Ineligible for loan
+  - condition: Borrower must not have deed-in-lieu of foreclosure within the last
+      2 years
+    action: Ineligible for loan
+  - condition: Borrower must not have short sale within the last 2 years
+    action: Ineligible for loan
+  - condition: Borrower must not have charge-off of mortgage account within the last
+      2 years
+    action: Ineligible for loan
+  - condition: Borrower must not have open tax liens
+    action: Must be paid off prior to or at loan closing
+  - condition: Borrower must not have open non-title charge-offs and collections greater
+      than $5,000
+    action: Must be paid
+  - condition: Borrower must not have medical collections greater than $15,000
+    action: Must be paid
+  - condition: Borrower must not have derogatory revolving and installment accounts
+      > 60 days within 2 years of closing
+    action: Requires full explanation
+  - condition: Borrower must not have public records and tax liens
+    action: Must be paid regardless of age
+  - condition: Borrower must not have private credit repair companies involved
+    action: Ineligible for loan
+  - condition: Borrower must not have fraud alert on credit report
+    action: Requires FACTA Fraud Alert Verification form
+  - condition: Borrower must not have contingent liabilities
+    action: Excluded from debt-to-income ratio
+  - condition: Borrower must not have mortgage assumption without release of liability
+    action: Requires documentation
+  - condition: Borrower must not have non-borrowing owner without signing mini set
+    action: Must sign mini set
+  - condition: Borrower must not have other real estate owned without counting PITIA
+    action: Excluded from borrower's recurring monthly debt obligations
+  - condition: Borrower must not have trust property without meeting requirements
+    action: Excluded from borrower's DSCR ratio
+  - condition: Borrower must not have housing payment history with excessive delinquency
+    action: Ineligible for loan
+  - condition: Borrower must not have housing payment history without verification
+    action: Requires verification and documentation
+  - condition: Borrower must not have rental housing payments without verification
+    action: Requires verification and documentation
+  - condition: Borrower must not have first-time homebuyer status
+    action: Ineligible for DSCR product
+  - condition: Borrower must not have income assessment without DSCR evaluation
+    action: Requires DSCR evaluation
+  - condition: Borrower must not have DSCR below 1.0
+    action: Ineligible for loan
+  - condition: Borrower must not have unleased units without LTV reduction
+    action: 5% LTV reduction required
+  - condition: Borrower must not have short-term rentals without meeting criteria
+    action: Requires AirDNA Revenue Calculator and other criteria
+  - condition: Borrower must not have verification of employment for DSCR product
+    action: Not required
+  - condition: Borrower must not have URLA employment history for DSCR product
+    action: Can be left blank
+  - condition: Borrower must not have asset types not specifically mentioned
+    action: Not permitted
+  - condition: Borrower must not have large deposits and new accounts without sourcing
+    action: Must be sourced and explained
+  - condition: Borrower must not have ineligible assets
+    action: Not permitted
+  - condition: Borrower must not have foreign assets without transfer to US bank account
+    action: Must be transferred to US bank account
+  - condition: Borrower must not have cryptocurrency as reserves
+    action: Not permitted
+  - condition: Borrower must not have earnest money deposit without verification
+    action: Must be verified, sourced, and documented
+  - condition: Borrower must not have stocks, bonds, and mutual funds without verification
+    action: Must be verified
+  - condition: Borrower must not have retirement funds without verification
+    action: Must be verified
+  - condition: Borrower must not have anticipated sales proceeds without verification
+    action: Must be verified
+  - condition: Borrower must not have gift funds without borrower minimum contribution
+    action: Requires 10% borrower minimum contribution
+  - condition: Borrower must not have cash value of life insurance without verification
+    action: Must be verified
+  - condition: Borrower must not have trust accounts without verification
+    action: Must be verified
+  - condition: Borrower must not have business assets without verification
+    action: Must be verified
+  - condition: Borrower must not have interested party contributions exceeding limits
+    action: Must not exceed limits
+  - condition: Borrower must not have sales concessions without deduction from sales
+      price
+    action: Must be deducted from sales price
+  - condition: Borrower must not have reserves without verification
+    action: Must be verified
+  - condition: Borrower must not have escrow/impound waivers without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have purchase transactions without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have property flip transactions without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have properties recently listed for sale without
+      meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have short sales and short payoffs without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have refinance transactions without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have continuity of obligation without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have rate/term refinance without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have cash-out refinance without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have adding/removing borrowers without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have net tangible benefit without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have non-arm's length transactions
+    action: Ineligible for DSCR program
+  - condition: Borrower must not have subordinate financing without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have age-related deed restriction without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have ineligible transactions
+    action: Ineligible for loan
+  - condition: Borrower must not have geographic eligibility without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have multiple parcels without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have condominium projects without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have PUD projects without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have property insurance without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have solar panels without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have initial disclosures without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have closing disclosures without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have affiliated business arrangements without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have fraud detection without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have higher-priced mortgage loans without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have title insurance policy without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have title vesting without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have living (inter vivos) revocable trusts without
+      meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have title exceptions and impediments without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have survey requirements without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have closing protection letter without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have power of attorney without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have appraisal analysis without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have CDA without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have second appraisal without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have appraisal independence without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have electronic appraisal review without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have appraisal report without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have appraisal transfers without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have age of appraisal report without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have purchase transactions without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have declining markets without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have addressing appraisal deficiencies without meeting
+      requirements
+    action: Must meet requirements
+  - condition: Borrower must not have site analysis without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have improvements without meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have final inspection and completion report without
+      meeting requirements
+    action: Must meet requirements
+  - condition: Borrower must not have disaster policy without meeting requirements
+    action: Must meet requirements
