@@ -6,10 +6,7 @@ from auth.routes import router as auth_router
 app = FastAPI(title="FastAPI + MongoDB Auth API")
 
 # ✅ CORS setup
-origins = [
-    "http://localhost:5173",  # Vite dev server
-    "http://127.0.0.1:5173",
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
