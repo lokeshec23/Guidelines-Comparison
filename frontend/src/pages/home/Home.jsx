@@ -2,12 +2,12 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 import Sidebar from "../../layout/Sidebar";
 import { HomeLayoutProvider } from "../../layout/HomeLayoutContext";
 import { Routes, Route, Navigate } from "react-router-dom";
 import IngestionModal from "../../components/ingestion/IngestionModal";
-
+import Dashboard from "../../pages/home/Dashboard";
 const Home = () => {
   return (
     <HomeLayoutProvider>
@@ -24,7 +24,7 @@ const Home = () => {
         {/* Sidebar + Route-based Main Area */}
         <Box sx={{ display: "flex", flexGrow: 1 }}>
           <Sidebar />
-          <IngestionModal />
+
           <Box
             component="main"
             sx={{
@@ -51,7 +51,7 @@ const Home = () => {
                     color="primary.main"
                     fontWeight={600}
                   >
-                    Dashboard
+                    <Dashboard />
                   </Typography>
                 }
               />
@@ -63,7 +63,7 @@ const Home = () => {
                     color="primary.main"
                     fontWeight={600}
                   >
-                    Ingestion
+                    <IngestionModal />
                   </Typography>
                 }
               />
@@ -83,7 +83,7 @@ const Home = () => {
           </Box>
         </Box>
 
-        <Footer />
+        {/* <Footer /> */}
       </Box>
     </HomeLayoutProvider>
   );

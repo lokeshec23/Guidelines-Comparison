@@ -32,7 +32,7 @@ const Dashboard = () => {
             Welcome, {user?.username || "User"} 👋
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            You’ve successfully logged in using JWT authentication.
+            You’ve successfully logged in to the Guidelines Comparison Tool.
           </Typography>
         </Paper>
       </Box>

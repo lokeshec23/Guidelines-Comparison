@@ -23,6 +23,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import useIngestionHandler from "./useIngestionHandler";
+import YamlViewer from "../YamlViewer/YamlViewer";
 
 const IngestionModal = () => {
   const {
@@ -33,6 +34,7 @@ const IngestionModal = () => {
     snackbarOpen,
     uploading,
     isDragActive,
+    yamlData,
     handleNameChange,
     handleFileSelect,
     handleRemoveFile,
@@ -291,6 +293,8 @@ const IngestionModal = () => {
           All PDFs uploaded successfully!
         </Alert>
       </Snackbar>
+
+      {yamlData && <YamlViewer yamlContent={yamlData} />}
     </>
   );
 };

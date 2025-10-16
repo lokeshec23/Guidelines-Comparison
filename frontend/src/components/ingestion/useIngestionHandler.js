@@ -1,6 +1,7 @@
 // src/components/ingestion/useIngestionHandler.js
 import { useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
 const useIngestionHandler = () => {
   const [open, setOpen] = useState(false);
@@ -10,6 +11,7 @@ const useIngestionHandler = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [yamlData, setYamlData] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,21 +27,14 @@ const useIngestionHandler = () => {
 
   const handleFileSelect = useCallback(async (files) => {
     try {
-      // const fileArray = Array.from(files);
-      // const pdfFiles = fileArray.filter(
-      //   (file) => file.type === "application/pdf"
-      // );
-      // if (pdfFiles.length !== fileArray.length)
-      //   alert("Only PDF files are allowed.");
-      // setSelectedFiles((prev) => [...prev, ...pdfFiles]);
-      // setUploadSuccess(true);
-      const formData = new FormData();
-      formData.append("file", files);
-      const response = await fetch("http://localhost:8000/process-guideline", {
-        method: "POST",
-        body: formData,
-      });
-      console.log({ response });
+      const fileArray = Array.from(files);
+      const pdfFiles = fileArray.filter(
+        (file) => file.type === "application/pdf"
+      );
+      if (pdfFiles.length !== fileArray.length)
+        alert("Only PDF files are allowed.");
+      setSelectedFiles((prev) => [...prev, ...pdfFiles]);
+      setUploadSuccess(true);
     } catch (error) {
       console.error("Error selecting files:", error);
     }
@@ -79,25 +74,41 @@ const useIngestionHandler = () => {
 
   const handleDiscard = useCallback(() => {
     setOpen(false);
-    navigate("/home/dashboard");
+    // navigate("/home/dashboard");
     setGuidelineName("");
     setSelectedFiles([]);
     setUploadSuccess(false);
-  }, [navigate]);
+  }, []);
 
-  const handleUpload = useCallback(() => {
+  const handleUpload = useCallback(async () => {
     if (!guidelineName || selectedFiles.length === 0) return;
-    setUploading(true);
-    setTimeout(() => {
-      setUploading(false);
+
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", selectedFiles[0]); // Only first file is sent
+
+      console.log("📤 Uploading file:", selectedFiles[0].name);
+
+      const response = await api.post("/process-guideline", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log(" Upload successful:", response.data);
+
+      // Optional UI updates
       setSnackbarOpen(true);
+      setUploadSuccess(true);
       setOpen(false);
+      setYamlData(response.data?.output_file || "");
+      // navigate("/home/dashboard");
+    } catch (error) {
+      console.error("❌ Upload failed:", error);
       setUploadSuccess(false);
-      setGuidelineName("");
-      setSelectedFiles([]);
-      navigate("/home/dashboard");
-    }, 1200);
-  }, [guidelineName, selectedFiles, navigate]);
+    } finally {
+      setUploading(false);
+    }
+  }, [guidelineName, selectedFiles]);
 
   const handleSnackbarClose = useCallback(() => {
     setSnackbarOpen(false);
@@ -111,6 +122,8 @@ const useIngestionHandler = () => {
     snackbarOpen,
     uploading,
     isDragActive,
+    yamlData,
+    setYamlData,
     handleNameChange,
     handleFileSelect,
     handleRemoveFile, // ✅ export remove handler

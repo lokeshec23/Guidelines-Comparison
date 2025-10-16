@@ -54,7 +54,8 @@ const Sidebar = () => {
       sx={{
         width: isSidebarExpanded ? 240 : 80,
         transition: "width 0.25s ease",
-        height: "calc(100vh - 89px)", // header + footer
+        // height: "calc(100vh - 89px)", // header + footer
+        height: "calc(100vh)", // header + footer
         bgcolor: "background.paper",
         borderRight: "1px solid #e0e0e0",
         position: "fixed",

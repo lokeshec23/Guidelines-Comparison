@@ -103,7 +103,7 @@ async def process_guideline(file: UploadFile = File(...)):
         return {
             "status": "success",
             "message": "Guideline processed successfully!",
-            "output_file": output_file,
+            "output_file": final_yaml,
         }
 
     except Exception as e:

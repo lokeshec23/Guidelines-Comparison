@@ -1,0 +1,192 @@
+guideline_ingestion:
+  taxonomy:
+  - category: Income Assessment
+    subcategories:
+    - Income Assessment Overview
+    - Rental Income Documentation
+    - Validation of Income
+    - 1099 Contract Employee
+    - Profit and Loss Statement
+    - Rental Income
+    - 1099-R Transcripts
+  - category: Purchase Transactions
+    subcategories:
+    - Purchase Contract
+    - Rate/Term Refinance
+  - category: Property Requirements
+    subcategories:
+    - Manufactured Homes
+    - Property Insurance Requirements
+    - Minimum Property Requirements
+    - Ineligible Transactions
+    - Condominium Projects
+  - category: Improvements
+    subcategories:
+    - Accessory Dwelling Units (ADU)
+  - category: Underwriting
+    subcategories:
+    - Manual Underwriting
+  - category: Debt Service Coverage Ratio (DSCR)
+    subcategories:
+    - Refinance
+  - category: Flex DSCR
+    subcategories:
+    - Flex DSCR Non-QM Program Eligibility Matrix
+    - Prepayment Penalty
+  - category: Credit History
+    subcategories:
+    - Credit Score Methodology
+  - category: Liability Assessment
+    subcategories:
+    - Rental Housing Payments
+  - category: Bank Statement - Flex Income
+    subcategories:
+    - Bank Statement / Flex Income Non-QM Program Eligibility Matrix
+    - Prepayment Penalty
+  - category: Credit Assessment
+    subcategories:
+    - Credit Assessment
+  - category: NOM Flex Equity Income
+    subcategories:
+    - Closed End Second (CES)
+  ontology:
+    Loan:
+      relates_to:
+      - Borrower
+      - Property
+      - Income
+      - CreditScore
+      - DebtServiceCoverageRatio
+    Borrower:
+      attributes:
+      - Name
+      - CreditScore
+      - Income
+      - EmploymentHistory
+    Property:
+      attributes:
+      - Type
+      - Location
+      - Insurance
+      - Appraisal
+    Income:
+      relates_to:
+      - Borrower
+      attributes:
+      - Type
+      - Documentation
+      - Validation
+    CreditScore:
+      relates_to:
+      - Borrower
+      attributes:
+      - FICO
+      - CreditHistory
+    DebtServiceCoverageRatio:
+      relates_to:
+      - Loan
+      attributes:
+      - CalculationMethod
+      - MarketRents
+    RentalIncome:
+      relates_to:
+      - Property
+      - Borrower
+      attributes:
+      - Documentation
+      - Validation
+    Underwriting:
+      relates_to:
+      - Loan
+      attributes:
+      - ManualUnderwriting
+      - ExceptionCodes
+    PrepaymentPenalty:
+      relates_to:
+      - Loan
+      attributes:
+      - StateRegulations
+      - Amount
+    1099ContractEmployee:
+      relates_to:
+      - Borrower
+      attributes:
+      - IncomeDocumentation
+      - EmploymentType
+    CreditAssessment:
+      relates_to:
+      - Borrower
+      attributes:
+      - CreditReport
+      - DebtToIncomeRatio
+  semantics:
+    TLS The Loan Store ®:
+      definition: A company providing loan services with updated guidelines.
+      context: The document outlines guideline updates for various loan programs effective
+        July 18, 2025.
+    Conforming:
+      definition: Loan programs that meet specific standards set by FNMA and FHLMC.
+      context: Updates include changes to income assessment and rental income documentation
+        requirements.
+    FHA:
+      definition: Federal Housing Administration loan programs.
+      context: Manual underwriting guidelines updated, including non-occupying borrower
+        income eligibility.
+    VA:
+      definition: Veterans Affairs loan programs.
+      context: Added requirements for wood-destroying pest inspections in property
+        evaluations.
+    Flex DSCR:
+      definition: Debt Service Coverage Ratio loan programs with flexible terms.
+      context: Updates to eligibility matrix and prepayment penalties for specific
+        states.
+    Bank Statement - Flex Income:
+      definition: Non-QM loan programs using bank statements to assess income.
+      context: Updates to eligibility matrix, credit score methodology, and prepayment
+        penalties.
+    1099 Contract Employee:
+      definition: Loan program for independent contractors using 1099 income documentation.
+      context: Requirements for tax transcripts and income validation updated.
+    Credit Assessment:
+      definition: Evaluation of borrower's credit history for loan qualification.
+      context: Moved requirements for credit report evaluation and derogatory account
+        explanations.
+    NOM Flex Equity Income Closed End Second (CES):
+      definition: A new closed-end second loan product.
+      context: Launch of new product with specific guidelines.
+  rules:
+  - condition: Significant decrease in income is 20% or more
+    action: Align with FNMA guidelines
+  - condition: Rental income from subject 1-4-unit investment property or 2-4-unit
+      primary residence is used to qualify
+    action: Require 1007 form and existing lease if available
+  - condition: Existing lease(s) must be current and fully executed in the property
+      seller's name as the landlord
+    action: LPA Only requirement
+  - condition: Non-occupant co-borrower income cannot be used for qualification
+    action: Manual underwrite where the occupying borrower has no fico score
+  - condition: Wood-destroying insect inspection required
+    action: Consider prior to issuance of the VA Notice of Value
+  - condition: Active infestation or damage found in wood-destroying pest inspection
+    action: Treatment and/or repairs must be completed
+  - condition: DSCR is between .75 and .99
+    action: Use updated rate and term for 700 fico bucket to 65%
+  - condition: Prepayment penalty in Ohio
+    action: Allowed; Max 1% of original principal balance of $112,957 or more
+  - condition: Prepayment penalty in New Jersey
+    action: Not allowed
+  - condition: LTV is greater than 85%
+    action: Max DTI is 45%
+  - condition: 1099 income documentation
+    action: Max LTV 90%
+  - condition: 1099 in name of the business
+    action: Tax transcripts not required
+  - condition: Profit and Loss Statement with Bank Statements
+    action: Max LTV of 80%
+  - condition: Past due consumer debts more than 30 days past due at time of closing
+    action: Not allowed
+  - condition: Derogatory revolving and installment accounts > 60 days and all mortgage
+      accounts > 1 x 30 within 2 years of closing
+    action: Require a full explanation
+  - condition: Condotel
+    action: Max LTV to 75%
