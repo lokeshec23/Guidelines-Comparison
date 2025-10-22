@@ -1,4 +1,5 @@
 import os
+import uvicorn
 import tempfile
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
@@ -79,11 +80,11 @@ async def process_guideline(file: UploadFile = File(...)):
 
         # Step 2️⃣ Generate Taxonomy / Ontology / Semantics / Rules
         print("🧠 Step 2: Generating structured knowledge using Azure OpenAI...")
-        taxonomy = generate_taxonomy(extracted_text)
+        taxonomy =  ""  #generate_taxonomy(extracted_text)
         print("✅ Taxonomy generated (length:", len(taxonomy), ")")
-        ontology = generate_ontology(extracted_text)
+        ontology = "" #generate_ontology(extracted_text)
         print("✅ Ontology generated (length:", len(ontology), ")")
-        semantics = generate_semantics(extracted_text)
+        semantics = "" #generate_semantics(extracted_text)
         print("✅ Semantics generated (length:", len(semantics), ")")
         rules = generate_rules(extracted_text)
         print("✅ Rules generated (length:", len(rules), ")")
@@ -115,3 +116,10 @@ async def process_guideline(file: UploadFile = File(...)):
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
             print("🧹 Cleaned up temporary file.")
+
+
+# ======================================
+#  Entrypoint
+# ======================================
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -14,3 +14,4 @@ azure-ai-formrecognizer
 azure-core
 # azure-ai-documentintelligences
 pdfplumber
+tiktoken
