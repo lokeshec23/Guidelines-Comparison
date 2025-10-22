@@ -14,7 +14,7 @@ from utils.azure_openai import (
     generate_semantics,
     generate_rules,
 )
-from utils.merge_utils import merge_results
+from utils.merge_utils import merge_results_json
 
 # -----------------------
 # Setup Environment
@@ -91,20 +91,21 @@ async def process_guideline(file: UploadFile = File(...)):
 
         # Step 3️⃣ Merge into unified YAML
         print("🧩 Step 3: Merging all results into a single YAML file...")
-        final_yaml = merge_results(taxonomy, ontology, semantics, rules)
+        final_json = merge_results_json(taxonomy, ontology, semantics, rules)
+
 
         # Save YAML output
-        output_file = os.path.join(OUTPUT_DIR, f"{file.filename}_ingested.yaml")
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(final_yaml)
+        # output_file = os.path.join(OUTPUT_DIR, f"{file.filename}_ingested.yaml")
+        # with open(output_file, "w", encoding="utf-8") as f:
+        #     f.write(final_json)
 
-        print("🎉 All steps completed successfully!")
-        print(f"📦 Output saved at: {output_file}")
+        # print("🎉 All steps completed successfully!")
+        # print(f"📦 Output saved at: {output_file}")
 
         return {
             "status": "success",
             "message": "Guideline processed successfully!",
-            "output_file": final_yaml,
+            "output_file": final_json,
         }
 
     except Exception as e:

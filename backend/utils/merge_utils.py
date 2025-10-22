@@ -1,15 +1,13 @@
-import yaml
-
-def merge_results(taxonomy, ontology, semantics, rules) -> str:
+def merge_results_json(taxonomy: dict, ontology: dict, semantics: dict, rules: dict) -> dict:
     """
-    Merge multiple YAML strings into one unified YAML.
+    Merge multiple JSON dictionaries into one unified dictionary.
     """
     merged = {
         "guideline_ingestion": {
-            "taxonomy": yaml.safe_load(taxonomy).get("taxonomy", taxonomy),
-            "ontology": yaml.safe_load(ontology).get("ontology", ontology),
-            "semantics": yaml.safe_load(semantics).get("semantics", semantics),
-            "rules": yaml.safe_load(rules).get("rules", rules)
+            "taxonomy": taxonomy,
+            "ontology": ontology,
+            "semantics": semantics,
+            "rules": rules
         }
     }
-    return yaml.dump(merged, sort_keys=False, allow_unicode=True)
+    return merged
