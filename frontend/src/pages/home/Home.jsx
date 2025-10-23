@@ -8,9 +8,11 @@ import { HomeLayoutProvider } from "../../layout/HomeLayoutContext";
 import { Routes, Route, Navigate } from "react-router-dom";
 import IngestionModal from "../../components/ingestion/IngestionModal";
 import Dashboard from "../../pages/home/Dashboard";
+import Loader from "../../components/Loader/Loader.jsx";
 const Home = () => {
   return (
     <HomeLayoutProvider>
+      <Loader />
       <Box
         sx={{
           display: "flex",

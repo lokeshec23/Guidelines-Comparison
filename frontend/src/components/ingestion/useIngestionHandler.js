@@ -2,8 +2,10 @@
 import { useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../api/axiosInstance";
+import { useLoader } from "../../context/LoaderContext";
 
 const useIngestionHandler = () => {
+  const { showLoader, hideLoader, updateProgress, updateMessage } = useLoader();
   const [open, setOpen] = useState(false);
   const [guidelineName, setGuidelineName] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -83,32 +85,53 @@ const useIngestionHandler = () => {
   const handleUpload = useCallback(async () => {
     if (!guidelineName || selectedFiles.length === 0) return;
 
+    showLoader();
+    updateProgress(0);
+    updateMessage("Uploading file...");
+
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append("file", selectedFiles[0]); // Only first file is sent
+      formData.append("file", selectedFiles[0]);
 
-      console.log("📤 Uploading file:", selectedFiles[0].name);
+      const progressInterval = setInterval(() => {
+        updateProgress((prev) => Math.min(prev + Math.random() * 5, 90));
+      }, 300);
 
       const response = await api.post("/process-guideline", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log(" Upload successful:", response.data);
+      clearInterval(progressInterval);
+      updateProgress(100);
+      updateMessage("Processing complete!");
 
-      // Optional UI updates
       setSnackbarOpen(true);
       setUploadSuccess(true);
-      setOpen(false);
       setYamlData(response.data?.output_file || "");
-      // navigate("/home/dashboard");
+      setOpen(false);
+
+      setTimeout(() => {
+        hideLoader();
+        updateProgress(0);
+        updateMessage("");
+      }, 500);
     } catch (error) {
       console.error("❌ Upload failed:", error);
+      updateMessage("Something went wrong during processing.");
+      hideLoader();
       setUploadSuccess(false);
     } finally {
       setUploading(false);
     }
-  }, [guidelineName, selectedFiles]);
+  }, [
+    guidelineName,
+    selectedFiles,
+    showLoader,
+    hideLoader,
+    updateProgress,
+    updateMessage,
+  ]);
 
   const handleSnackbarClose = useCallback(() => {
     setSnackbarOpen(false);

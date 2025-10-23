@@ -12,7 +12,7 @@ import Login from "./pages/auth/Login";
 import Home from "./pages/home/Home";
 
 import "./App.css";
-
+import Loader from "./components/Loader/Loader.jsx";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
