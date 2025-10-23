@@ -114,6 +114,10 @@ const useIngestionHandler = () => {
     setSnackbarOpen(false);
   }, []);
 
+  const handleJSONViewerClose = useCallback(() => {
+    setYamlData("");
+  }, []);
+
   return {
     open,
     guidelineName,
@@ -134,6 +138,7 @@ const useIngestionHandler = () => {
     handleUpload,
     handleSnackbarClose,
     checkRouteForModal,
+    handleJSONViewerClose,
   };
 };
 

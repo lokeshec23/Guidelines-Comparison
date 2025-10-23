@@ -23,7 +23,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import useIngestionHandler from "./useIngestionHandler";
-import YamlViewer from "../YamlViewer/YamlViewer";
+// import YamlViewer from "../YamlViewer/YamlViewer";
+import JSONViewer from "../JSONViewer/JSONViewer";
 
 const IngestionModal = () => {
   const {
@@ -35,6 +36,7 @@ const IngestionModal = () => {
     uploading,
     isDragActive,
     yamlData,
+    handleJSONViewerClose,
     handleNameChange,
     handleFileSelect,
     handleRemoveFile,
@@ -294,7 +296,9 @@ const IngestionModal = () => {
         </Alert>
       </Snackbar>
 
-      {yamlData && <YamlViewer yamlContent={yamlData} />}
+      {yamlData && (
+        <JSONViewer data={yamlData} onClose={handleJSONViewerClose} />
+      )}
     </>
   );
 };
