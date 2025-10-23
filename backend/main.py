@@ -1,20 +1,16 @@
 import os
+import json
 import uvicorn
 import tempfile
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Local imports
 from auth.routes import router as auth_router
 from utils.azure_ocr import AzureOCR
-from utils.azure_openai import (
-    split_text_into_chunks,
-    generate_taxonomy,
-    generate_ontology,
-    generate_semantics,
-    generate_rules,
-)
+# from utils.azure_openai import generate_all_structures
 from utils.merge_utils import merge_results_json
 
 # -----------------------
@@ -39,10 +35,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Output folder for results
-OUTPUT_DIR = os.path.join(BASE_DIR, "output")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-
 # Include authentication routes
 app.include_router(auth_router)
 
@@ -58,52 +50,66 @@ def root():
 # -----------------------
 # PDF Processing Endpoint
 # -----------------------
+
 @app.post("/process-guideline")
 async def process_guideline(file: UploadFile = File(...)):
-    """
-    Upload PDF → Run Azure OCR → Generate JSON outputs
-    → Merge into single JSON → Return as response
-    """
     print("📥 File upload received:", file.filename)
 
-    # Save uploaded file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
         tmp_pdf.write(await file.read())
         pdf_path = tmp_pdf.name
 
     try:
-        # Step 1️⃣ Run Azure OCR
         print("🔍 Step 1: Starting OCR extraction...")
         ocr_client = AzureOCR()
         extracted_text = ocr_client.analyze_doc(pdf_path)
-        print("✅ Step 1 completed — text length:", len(extracted_text))
+        print("✅ OCR completed — text length:", len(extracted_text))
 
-        # Step 2️⃣ Split text once for all generators
+        from utils.azure_openai import split_text_into_chunks
         chunks = split_text_into_chunks(extracted_text)
-        print(f"🧩 Split text into {len(chunks)} chunk(s) for model processing")
+        print(f"🧩 Text split into {len(chunks)} chunks for model processing")
 
-        print("🧠 Step 2: Generating structured knowledge using Azure OpenAI...")
+        from utils.azure_openai import (
+            generate_taxonomy,
+            generate_ontology,
+            generate_semantics,
+            generate_rules,
+        )
 
-        taxonomy = generate_taxonomy(chunks)
-        print("✅ Taxonomy generated")
+        print("🧠 Step 3: Generating structured knowledge in parallel...")
 
-        ontology = generate_ontology(chunks)
-        print("✅ Ontology generated")
+        results = {}
+        funcs = {
+            "taxonomy": generate_taxonomy,
+            "ontology": generate_ontology,
+            "semantics": generate_semantics,
+            "rules": generate_rules,
+        }
 
-        semantics = generate_semantics(chunks)
-        print("✅ Semantics generated")
+        # Run all functions concurrently
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            future_to_name = {executor.submit(func, chunks): name for name, func in funcs.items()}
+            for future in as_completed(future_to_name):
+                name = future_to_name[future]
+                try:
+                    results[name] = future.result()
+                    print(f"✅ {name} generated")
+                except Exception as e:
+                    print(f"❌ Error generating {name}: {e}")
+                    results[name] = {}
 
-        rules = generate_rules(chunks)
-        print("✅ Rules generated")
-
-        # Step 3️⃣ Merge into unified JSON
-        merged_json = merge_results_json(taxonomy, ontology, semantics, rules)
-        print("✅ All outputs merged into JSON")
+        from utils.merge_utils import merge_results_json
+        final_json = merge_results_json(
+            results["taxonomy"],
+            results["ontology"],
+            results["semantics"],
+            results["rules"]
+        )
 
         return {
             "status": "success",
             "message": "Guideline processed successfully!",
-            "output_file": merged_json,
+            "output_file": final_json,
         }
 
     except Exception as e:
@@ -111,14 +117,13 @@ async def process_guideline(file: UploadFile = File(...)):
         return {"status": "error", "message": str(e)}
 
     finally:
-        # Always remove the temporary uploaded file
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
-            print("🧹 Cleaned up temporary file.")
+            print("🧹 Temporary file cleaned up")
 
 
 # ======================================
-# Entrypoint
+#  Entrypoint
 # ======================================
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
