@@ -1,6 +1,6 @@
 // src/components/ingestion/useIngestionHandler.js
 import { useState, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import api from "../../api/axiosInstance";
 
 const useIngestionHandler = () => {
@@ -14,7 +14,7 @@ const useIngestionHandler = () => {
   const [yamlData, setYamlData] = useState("");
 
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const checkRouteForModal = useCallback(() => {
     if (location.pathname === "/home/ingestion") setOpen(true);

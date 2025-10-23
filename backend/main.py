@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.routes import router as auth_router
 from utils.azure_ocr import AzureOCR
 from utils.azure_openai import (
+    split_text_into_chunks,
     generate_taxonomy,
     generate_ontology,
     generate_semantics,
@@ -38,7 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Output folder for YAML results
+# Output folder for results
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -60,9 +61,8 @@ def root():
 @app.post("/process-guideline")
 async def process_guideline(file: UploadFile = File(...)):
     """
-    Upload PDF → Run Azure OCR (parallel chunks)
-    → Generate Taxonomy, Ontology, Semantics, Rules
-    → Merge YAML → Return Output Path
+    Upload PDF → Run Azure OCR → Generate JSON outputs
+    → Merge into single JSON → Return as response
     """
     print("📥 File upload received:", file.filename)
 
@@ -78,34 +78,32 @@ async def process_guideline(file: UploadFile = File(...)):
         extracted_text = ocr_client.analyze_doc(pdf_path)
         print("✅ Step 1 completed — text length:", len(extracted_text))
 
-        # Step 2️⃣ Generate Taxonomy / Ontology / Semantics / Rules
+        # Step 2️⃣ Split text once for all generators
+        chunks = split_text_into_chunks(extracted_text)
+        print(f"🧩 Split text into {len(chunks)} chunk(s) for model processing")
+
         print("🧠 Step 2: Generating structured knowledge using Azure OpenAI...")
-        taxonomy =  ""  #generate_taxonomy(extracted_text)
-        print("✅ Taxonomy generated (length:", len(taxonomy), ")")
-        ontology = "" #generate_ontology(extracted_text)
-        print("✅ Ontology generated (length:", len(ontology), ")")
-        semantics = "" #generate_semantics(extracted_text)
-        print("✅ Semantics generated (length:", len(semantics), ")")
-        rules = generate_rules(extracted_text)
-        print("✅ Rules generated (length:", len(rules), ")")
 
-        # Step 3️⃣ Merge into unified YAML
-        print("🧩 Step 3: Merging all results into a single YAML file...")
-        final_json = merge_results_json(taxonomy, ontology, semantics, rules)
+        taxonomy = generate_taxonomy(chunks)
+        print("✅ Taxonomy generated")
 
+        ontology = generate_ontology(chunks)
+        print("✅ Ontology generated")
 
-        # Save YAML output
-        # output_file = os.path.join(OUTPUT_DIR, f"{file.filename}_ingested.yaml")
-        # with open(output_file, "w", encoding="utf-8") as f:
-        #     f.write(final_json)
+        semantics = generate_semantics(chunks)
+        print("✅ Semantics generated")
 
-        # print("🎉 All steps completed successfully!")
-        # print(f"📦 Output saved at: {output_file}")
+        rules = generate_rules(chunks)
+        print("✅ Rules generated")
+
+        # Step 3️⃣ Merge into unified JSON
+        merged_json = merge_results_json(taxonomy, ontology, semantics, rules)
+        print("✅ All outputs merged into JSON")
 
         return {
             "status": "success",
             "message": "Guideline processed successfully!",
-            "output_file": final_json,
+            "output_file": merged_json,
         }
 
     except Exception as e:
@@ -120,7 +118,7 @@ async def process_guideline(file: UploadFile = File(...)):
 
 
 # ======================================
-#  Entrypoint
+# Entrypoint
 # ======================================
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
