@@ -99,6 +99,8 @@ def process_chunks(chunks: List[str], prompt_template: str) -> dict:
 def generate_taxonomy(chunks: List[str]) -> str:
     prompt_template = """
 You are an expert mortgage guideline analyst specializing in document taxonomy extraction.
+You are an AI that extracts hierarchical Taxonomy information from a guideline.
+Output JSON ONLY — no explanations or markdown.
 
 ### INSTRUCTIONS
 1. Analyze the mortgage guideline text and identify the hierarchical structure
@@ -108,11 +110,12 @@ You are an expert mortgage guideline analyst specializing in document taxonomy e
 5. Do NOT hallucinate or infer beyond what's explicitly in the text
 
 ### OUTPUT FORMAT (JSON ONLY)
-{{
-  "taxonomy": [
-    {{"category": "Main Category Name","subcategories": ["Subcategory 1","Subcategory 2"]}}
-  ]
-}}
+Example:
+taxonomy:
+  - category: Loan Eligibility
+    subcategories:
+      - Income Verification
+      - Credit History
 
 ### TEXT TO PROCESS
 {text}
@@ -123,7 +126,8 @@ You are an expert mortgage guideline analyst specializing in document taxonomy e
 
 def generate_ontology(chunks: List[str]) -> str:
     prompt_template = """
-You are an expert mortgage ontology specialist.
+You are an AI that generates Ontology (relationships between entities) from a guideline.
+Output strictly JSON only.
 
 ### INSTRUCTIONS
 1. Identify key entities in the mortgage guideline (e.g., Loan, Borrower, Property, Lender)
@@ -133,11 +137,16 @@ You are an expert mortgage ontology specialist.
 5. Do NOT add information not present in the text
 
 ### OUTPUT FORMAT (JSON ONLY)
-{{
-  "ontology": {{
-    "EntityName": {{"relates_to": ["Entity1", "Entity2"], "attributes": ["attribute1", "attribute2"], "description": "Brief entity description"}}
-  }}
-}}
+Example:
+ontology:
+  Loan:
+    relates_to:
+      - Borrower
+      - Collateral
+  Borrower:
+    attributes:
+      - Name
+      - CreditScore
 
 ### TEXT TO PROCESS
 {text}
@@ -148,7 +157,8 @@ You are an expert mortgage ontology specialist.
 
 def generate_semantics(chunks: List[str]) -> str:
     prompt_template = """
-You are an expert mortgage terminology specialist.
+You are an AI that identifies semantic meanings (key terms, definitions, and context).
+Return JSON only, with structure:
 
 ### INSTRUCTIONS
 1. Identify key mortgage terms and their definitions from the text
@@ -158,11 +168,10 @@ You are an expert mortgage terminology specialist.
 5. Only extract terms explicitly defined or explained in the text
 
 ### OUTPUT FORMAT (JSON ONLY)
-{{
-  "semantics": {{
-    "TermName": {{"definition": "Clear definition of the term","context": "How this term is used in the guideline","related_terms": ["term1","term2"]}}
-  }}
-}}
+semantics:
+  Term:
+    definition: ...
+    context: ...
 
 ### TEXT TO PROCESS
 {text}
@@ -173,7 +182,8 @@ You are an expert mortgage terminology specialist.
 
 def generate_rules(chunks: List[str]) -> str:
     prompt_template = """
-You are an expert U.S. mortgage underwriting analyst.
+You are an expert U.S. mortgage underwriting analyst.You will be given text from a mortgage guideline document (e.g., Non-QM, DSCR, Conventional, etc.).
+Your job is to extract and structure it into clean, hierarchical JSON.
 
 ### INSTRUCTIONS
 1. Identify major sections and subsections based on titles, numbering, or formatting
@@ -188,7 +198,13 @@ You are an expert U.S. mortgage underwriting analyst.
 
 ### OUTPUT FORMAT (JSON ONLY)
 {{
-  "Major Section Title": {{"summary": "Short description","Subsection Title": "Condensed rules"}}
+  "Major Section Title": {{
+    "summary": "Short description of what this section covers.",
+    "Subsection Title": "Condensed key rules, eligibility, or conditions under that subsection."
+  }},
+  "Next Major Section": {{
+    ...
+  }}
 }}
 
 ### TEXT TO PROCESS
