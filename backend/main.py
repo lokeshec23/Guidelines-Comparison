@@ -160,7 +160,7 @@ def process_pdf_background(session_id: str, pdf_path: str, filename: str):
             generate_rules,
         )
 
-        print("🧠 Starting AI processing with 4 parallel tasks...\n")
+        print("Starting AI processing with 4 parallel tasks...\n")
         
         results = {}
         completed_tasks = 0

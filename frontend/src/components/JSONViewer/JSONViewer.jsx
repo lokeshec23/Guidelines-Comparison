@@ -19,6 +19,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const JsonViewer = ({ data, onClose }) => {
+  debugger;
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
